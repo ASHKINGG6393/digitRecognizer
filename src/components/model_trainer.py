@@ -35,7 +35,7 @@ class ModelTrainer:
                 test_array[:,:-1],
                 test_array[:,:-1]
             )
-            models=(
+            models={
                 "Random Forest": RandomForestRegressor(),
                 "Decision Tree":DecisionTreeRegressor(),
                 "Gradient Boosting":GradientBoostingRegressor(),
@@ -44,7 +44,7 @@ class ModelTrainer:
                 "XG Boost Regressor":XGBRegressor(),
                 "Cat Boost Regressor":CatBoostRegressor(verbose=False),
                 "Ada boost Regressor":AdaBoostRegressor()
-            )
+            }
 
             model_report:dict=evaluate_model(x=x_train,y=y_train,x_test=x_test,y_test=y_test,models=models)
 
