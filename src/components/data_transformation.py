@@ -26,18 +26,19 @@ class DataTransformation:
         #This function is responsible for data transformation
         try:
             numerical_columns= ["writing_score","reading_score"]
-            categorical_features=[
+
+            categorical_columns=[
                 "gender",
                 "race_ethnicity",
                 "parental_level_of_education",
                 "lunch",
                 "test_preparation_course"
-            ]
+                ]
 
             num_pipeline= Pipeline(
                 steps=[
                     ("imputer",SimpleImputer(strategy="median")),               #handling missing values
-                    ("scaler",StandardScaler())
+                    ("scaler",StandardScaler(with_mean=False))
                 ]
             )
 
@@ -45,7 +46,7 @@ class DataTransformation:
                 steps=[
                     ("imputer",SimpleImputer(strategy="most_frequent")),
                     ("one_hot_encoder",OneHotEncoder()),
-                    ("scaler",StandardScaler())
+                    ("scaler",StandardScaler(with_mean=False))
                 ]
                             
             )
@@ -75,20 +76,24 @@ class DataTransformation:
 
             logging.info("Obtaining preprocessor object")
 
-            preprocessor_obj=self.get_data_transformer_object()
+            preprocessor_obj =self.get_data_transformer_object()
 
             target_column_name="math_score"
-            numerical_columns= ["writing_score","reading_score"]
+            numerical_columns = ["writing_score", "reading_score"]
 
-            input_feature_train_df=train_df.drop(columns=target_column_name,axis=1)
+
+            input_feature_train_df=train_df.drop(columns=[target_column_name],axis=1)
+            target_feature_train_df=train_df[target_column_name]
+
+            input_feature_test_df=test_df.drop(columns=[target_column_name],axis=1)
             target_feature_test_df=test_df[target_column_name]
 
             logging.info(
                 f"Applying preprocessing object on training dataframe and testing dataframe."
             )
 
-            input_features_train_arr=preprocessing_obj.fit_transform(input_features_train_df)
-            input_features_test_arr=preprocessing_obj.transform(input_features_test_df)
+            input_features_train_arr=preprocessor_obj.fit_transform(input_feature_train_df)
+            input_features_test_arr=preprocessor_obj.transform(input_feature_test_df)
 
             train_arr=np.c_[input_features_train_arr,np.array(target_feature_train_df)]
 
